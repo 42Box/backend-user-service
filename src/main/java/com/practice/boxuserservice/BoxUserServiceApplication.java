@@ -3,6 +3,7 @@ package com.practice.boxuserservice;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -18,11 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author middlefitting
  * @version 1.0.0
  * @see SpringBootApplication
- * @see ModelMapper
- * @see BCryptPasswordEncoder
  * @since 2023-08-23
  */
 @SpringBootApplication
+@EnableJpaAuditing
 public class BoxUserServiceApplication {
 
   public static void main(String[] args) {
