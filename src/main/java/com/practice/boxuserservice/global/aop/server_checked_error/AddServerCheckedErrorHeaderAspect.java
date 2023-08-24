@@ -25,8 +25,8 @@ public class AddServerCheckedErrorHeaderAspect {
 
   @Around("@annotation(com.practice.boxuserservice.global.aop.server_checked_error.AddServerCheckedErrorHeader) && args(ex,..)")
   public Object addCustomErrorHeader(ProceedingJoinPoint joinPoint, Exception ex) throws Throwable {
-    String key = envUtil.getEnv("header.server-checked-error.key");
-    String value = envUtil.getEnv("header.server-checked-error.value");
+    String key = envUtil.getStringEnv("header.server-checked-error.key");
+    String value = envUtil.getStringEnv("header.server-checked-error.value");
     Object result = joinPoint.proceed();
 
     if (result instanceof ResponseEntity) {
