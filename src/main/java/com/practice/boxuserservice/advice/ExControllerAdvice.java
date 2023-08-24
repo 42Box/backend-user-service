@@ -1,10 +1,13 @@
 package com.practice.boxuserservice.advice;
 
 import com.practice.boxuserservice.global.aop.server_checked_error.AddServerCheckedErrorHeader;
+import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,12 +19,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @since : 2023/08/24
  */
 @RestControllerAdvice
+@AllArgsConstructor
 public class ExControllerAdvice {
+
+  private final EnvUtil envUtil;
 
   @ExceptionHandler(DefaultServiceException.class)
   @AddServerCheckedErrorHeader
   public ResponseEntity<ErrorResult> defaultServiceExceptionHandler(DefaultServiceException e) {
-    return new ResponseEntity<>(new ErrorResult(e.getMessage(), e.getCode()), e.getStatus());
+    return new ResponseEntity<>(new ErrorResult(e.getMsg(), e.getCode()), e.getStatus());
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @AddServerCheckedErrorHeader
+  public ResponseEntity<ErrorResult> MethodArgumentNotValidError(
+      MethodArgumentNotValidException e) {
+    String msg = envUtil.getStringEnv("global.error.invalid-argument-request.msg");
+    int code = envUtil.getIntegerEnv("global.error.invalid-argument-request.code");
+    HttpStatus status = envUtil.getHttpStatusEnv("global.error.invalid-argument-request.status");
+
+    return new ResponseEntity<>(new ErrorResult(msg, code), status);
   }
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

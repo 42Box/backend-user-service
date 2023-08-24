@@ -4,6 +4,7 @@ import com.practice.boxuserservice.global.exception.EnvException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,8 +21,18 @@ public class EnvUtil {
 
   private final Environment env;
 
-  public String getEnv(String key) {
+  public String getStringEnv(String key) {
     Optional<String> valueOpt = Optional.ofNullable(env.getProperty(key));
     return valueOpt.orElseThrow(EnvException::new);
+  }
+
+  public int getIntegerEnv(String key) {
+    Optional<String> valueOpt = Optional.ofNullable(env.getProperty(key));
+    return Integer.parseInt(valueOpt.orElseThrow(EnvException::new));
+  }
+
+  public HttpStatus getHttpStatusEnv(String key) {
+    Optional<String> valueOpt = Optional.ofNullable(env.getProperty(key));
+    return HttpStatus.valueOf(Integer.parseInt(valueOpt.orElseThrow(EnvException::new)));
   }
 }

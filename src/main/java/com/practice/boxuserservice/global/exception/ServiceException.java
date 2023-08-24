@@ -15,5 +15,5 @@ public interface ServiceException {
 
   int getCode();
 
-  String getMessage();
+  String getMsg();
 }
