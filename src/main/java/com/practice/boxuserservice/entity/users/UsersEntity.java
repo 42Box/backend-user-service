@@ -1,10 +1,12 @@
 package com.practice.boxuserservice.entity.users;
 
 import com.practice.boxuserservice.entity.BaseEntity;
+import com.practice.boxuserservice.entity.users.converter.UsersUrlListConverter;
 import com.practice.boxuserservice.entity.users.type.UsersDefault;
 import com.practice.boxuserservice.entity.users.type.UsersIcon;
 import com.practice.boxuserservice.entity.users.type.UsersRole;
 import com.practice.boxuserservice.entity.users.type.UsersTheme;
+import com.practice.boxuserservice.entity.users.type.UsersUrl;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +27,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.HttpStatus;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 /**
  * UsersEntity.
@@ -62,7 +62,7 @@ public class UsersEntity extends BaseEntity {
   private int campusId;
 
   @Length(min = 1, max = 50)
-  @Column(name = "user_nickname", unique = true, nullable = false)
+  @Column(name = "user_nickname", unique = true, nullable = false, updatable = false)
   private String nickname;
 
   @Enumerated(EnumType.STRING)
@@ -75,7 +75,7 @@ public class UsersEntity extends BaseEntity {
 
   @Convert(converter = UsersUrlListConverter.class)
   @Column(name = "user_url_list", columnDefinition = "TEXT", nullable = false)
-  private List<Tuple2<String, String>> urlList;
+  private List<UsersUrl> urlList;
 
   @Column(name = "user_profile_image", columnDefinition = "VARCHAR(255)", nullable = false)
   private String profileImage;
@@ -118,18 +118,30 @@ public class UsersEntity extends BaseEntity {
 
   private void initUrlList() {
     this.urlList = Arrays.asList(
-        Tuples.of("home", "https://42box.kr/"),
-        Tuples.of("23Coaltheme", "https://42box.github.io/front-end/"),
-        Tuples.of("loopback", "http://127.0.0.1:3000/"),
-        Tuples.of("Box 42", "https://42box.github.io/front-end/#/box"),
-        Tuples.of("Intra 42", "https://intra.42.fr"),
-        Tuples.of("Jiphyeonjeon", "https://42library.kr"),
-        Tuples.of("42STAT", "https://stat.42seoul.kr/home"),
-        Tuples.of("24Hane", "https://24hoursarenotenough.42seoul.kr"),
-        Tuples.of("80kCoding", "https://80000coding.oopy.io"),
-        Tuples.of("where42", "https://www.where42.kr"),
-        Tuples.of("cabi", "https://cabi.42seoul.io/"),
-        Tuples.of("42gg", "https://42gg.kr/")
+        new UsersUrl("home", "https://42box.kr/"),
+        new UsersUrl("23Coaltheme", "https://42box.github.io/front-end/"),
+        new UsersUrl("loopback", "http://127.0.0.1:3000/"),
+        new UsersUrl("Box 42", "https://42box.github.io/front-end/#/box"),
+        new UsersUrl("Intra 42", "https://intra.42.fr"),
+        new UsersUrl("Jiphyeonjeon", "https://42library.kr"),
+        new UsersUrl("42STAT", "https://stat.42seoul.kr/home"),
+        new UsersUrl("24Hane", "https://24hoursarenotenough.42seoul.kr"),
+        new UsersUrl("80kCoding", "https://80000coding.oopy.io"),
+        new UsersUrl("where42", "https://www.where42.kr"),
+        new UsersUrl("cabi", "https://cabi.42seoul.io/"),
+        new UsersUrl("42gg", "https://42gg.kr/")
     );
+  }
+
+  public void updateUrlList(List<UsersUrl> urlList) {
+    this.urlList = urlList;
+  }
+
+  public void updateIcon(UsersIcon icon) {
+    this.icon = icon;
+  }
+
+  public void updateTheme(UsersTheme theme) {
+    this.theme = theme;
   }
 }

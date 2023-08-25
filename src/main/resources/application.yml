@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8094
 spring:
   application:
     name: user-service
@@ -12,9 +12,9 @@ spring:
     generate-ddl: true
     defer-datasource-initialization: true
     open-in-view: false
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:memberService
+  cloud:
+    refresh:
+      extra-refreshable: com.zaxxer.hikari.HikariDataSource
 
 eureka:
   instance:

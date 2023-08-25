@@ -1,4 +1,4 @@
-package com.practice.boxuserservice.entity.users;
+package com.practice.boxuserservice.entity.users.converter;
 
 import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
@@ -7,20 +7,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 @Converter
 @Component
-@RequiredArgsConstructor
-public class UsersUrlListConverter implements
+@AllArgsConstructor
+public class UsersUrlListTupleConverter implements
     AttributeConverter<List<Tuple2<String, String>>, String> {
 
   private final EnvUtil envUtil;
-
   private static final String ELEMENT_SEPARATOR = ";";
   private static final String TUPLE_SEPARATOR = ",";
 
@@ -45,9 +43,7 @@ public class UsersUrlListConverter implements
   private void validateTuple(Tuple2<String, String> tuple) {
     if (tuple.getT1().contains(ELEMENT_SEPARATOR) || tuple.getT1().contains(TUPLE_SEPARATOR) ||
         tuple.getT2().contains(ELEMENT_SEPARATOR) || tuple.getT2().contains(TUPLE_SEPARATOR)) {
-      String msg = envUtil.getEnv("users.error.users-url-list-converter.msg");
-      int code = Integer.parseInt(envUtil.getEnv("users.error.users-url-list-converter.code"));
-      throw new DefaultServiceException(msg, code, HttpStatus.BAD_REQUEST);
+      throw new DefaultServiceException("users.error.users-url-list-converter", envUtil);
     }
   }
 }
