@@ -55,4 +55,6 @@ public class ExControllerAdvice {
     return new ResponseEntity<>(new ErrorResult("정의되지 않은 에러입니다!", 1),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+//  HttpMessageNotReadableException
 }

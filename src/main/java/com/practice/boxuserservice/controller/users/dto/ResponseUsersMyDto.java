@@ -1,11 +1,11 @@
 package com.practice.boxuserservice.controller.users.dto;
 
+import com.practice.boxuserservice.entity.users.type.UsersUrl;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import reactor.util.function.Tuple2;
 
 /**
  * ResponseusersDto.
@@ -23,7 +23,7 @@ public class ResponseUsersMyDto {
   private String nickname;
   private int theme;
   private String icon;
-  private List<Tuple2<String, String>> urlList;
+  private List<UsersUrl> urlList;
   private String profileImage;
 
   public ResponseUsersMyDto(UserMyPageDto dto) {

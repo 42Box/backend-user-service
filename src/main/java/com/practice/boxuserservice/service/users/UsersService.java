@@ -37,7 +37,6 @@ public class UsersService {
   }
 
   private void duplicateNicknameCheck(PostUsersDto dto) {
-    System.out.println(dto.getNickname());
     if (dto.getNickname() != null) {
       Optional<UsersEntity> duplicateUser = usersRepository.findByNickname(dto.getNickname());
       if (duplicateUser.isPresent()) {
