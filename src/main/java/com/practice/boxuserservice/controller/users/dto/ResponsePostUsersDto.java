@@ -1,22 +1,22 @@
 package com.practice.boxuserservice.controller.users.dto;
 
-import javax.validation.constraints.NotNull;
+import com.practice.boxuserservice.entity.users.type.UsersRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * RequestUpdateUsersThemeDto.
+ * ResponsePostUsersDto.
  *
  * @author : middlefitting
  * @description :
  * @since : 2023/08/25
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class RequestUpdateUsersThemeDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ResponsePostUsersDto {
 
-  @NotNull
-  private Integer theme;
+  private UsersRole role;
+  private String uuid;
 }

@@ -1,13 +1,13 @@
 package com.practice.boxuserservice.service.users.dto;
 
-import com.practice.boxuserservice.entity.users.type.UsersUrl;
-import java.util.List;
+import com.practice.boxuserservice.entity.users.type.UsersRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 /**
- * UpdateUsersUrlListDto.
+ * PostUsersResultDto.
  *
  * @author : middlefitting
  * @description :
@@ -16,8 +16,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdateUsersUrlListDto {
+public class PostUsersResultDto {
 
-  private String uuid;
-  private List<UsersUrl> urlList;
+  UsersRole role;
+  String uuid;
+  HttpStatus status;
 }

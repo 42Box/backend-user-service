@@ -1,11 +1,11 @@
 package com.practice.boxuserservice.controller.users.dto;
 
+import com.practice.boxuserservice.entity.users.type.UsersUrl;
 import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import reactor.util.function.Tuple2;
 
 /**
  * RequestUpdateUsersUrlListDto.
@@ -20,5 +20,5 @@ import reactor.util.function.Tuple2;
 public class RequestUpdateUsersUrlListDto {
 
   @NotEmpty
-  private List<Tuple2<String, String>> urlList;
+  private List<UsersUrl> urlList;
 }

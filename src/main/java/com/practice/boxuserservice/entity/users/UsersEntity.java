@@ -132,4 +132,16 @@ public class UsersEntity extends BaseEntity {
         new UsersUrl("42gg", "https://42gg.kr/")
     );
   }
+
+  public void updateUrlList(List<UsersUrl> urlList) {
+    this.urlList = urlList;
+  }
+
+  public void updateIcon(UsersIcon icon) {
+    this.icon = icon;
+  }
+
+  public void updateTheme(UsersTheme theme) {
+    this.theme = theme;
+  }
 }

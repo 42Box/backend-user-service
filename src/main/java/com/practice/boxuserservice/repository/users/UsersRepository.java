@@ -14,4 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UsersRepository extends JpaRepository<UsersEntity, Long> {
 
   Optional<UsersEntity> findByNickname(String nickname);
+
+  Optional<UsersEntity> findByUuid(String uuid);
 }
