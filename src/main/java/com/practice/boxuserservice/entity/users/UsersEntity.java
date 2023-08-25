@@ -62,7 +62,7 @@ public class UsersEntity extends BaseEntity {
   private int campusId;
 
   @Length(min = 1, max = 50)
-  @Column(name = "user_nickname", unique = true, nullable = false)
+  @Column(name = "user_nickname", unique = true, nullable = false, updatable = false)
   private String nickname;
 
   @Enumerated(EnumType.STRING)

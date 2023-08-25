@@ -2,7 +2,6 @@ package com.practice.boxuserservice.global.exception;
 
 import com.practice.boxuserservice.global.env.EnvUtil;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -19,10 +18,6 @@ public class DefaultServiceException extends RuntimeException implements Service
   private final int code;
   private final HttpStatus status;
 
-  @Autowired
-  private EnvUtil envUtil;
-
-
   public DefaultServiceException(String msg, int code, HttpStatus status) {
     super();
     this.msg = msg;
@@ -30,7 +25,7 @@ public class DefaultServiceException extends RuntimeException implements Service
     this.status = status;
   }
 
-  public DefaultServiceException(String envKey) {
+  public DefaultServiceException(String envKey, EnvUtil envUtil) {
     super();
     this.msg = envUtil.getStringEnv(envKey + ".msg");
     this.code = envUtil.getIntegerEnv(envKey + ".code");
