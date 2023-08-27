@@ -1,23 +1,23 @@
-package com.practice.boxuserservice.controller.users.dto;
+package com.practice.boxuserservice.service.users.dto;
 
-import com.practice.boxuserservice.entity.users.type.UsersRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ResponsePostUsersDto.
+ * UserDto.
  *
  * @author : middlefitting
  * @since : 2023/08/25
  */
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponsePostUsersDto {
+@Data
+public class UserProfileDto {
 
-  private UsersRole role;
   private String uuid;
+  private String nickname;
   private String profileImageUrl;
   private String profileImagePath;
+  private String statusMessage;
 }

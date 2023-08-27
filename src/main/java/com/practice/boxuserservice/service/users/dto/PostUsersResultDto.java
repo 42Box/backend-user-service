@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
  * PostUsersResultDto.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/25
  */
 @AllArgsConstructor
@@ -18,7 +17,9 @@ import org.springframework.http.HttpStatus;
 @Data
 public class PostUsersResultDto {
 
-  UsersRole role;
-  String uuid;
-  HttpStatus status;
+  private UsersRole role;
+  private String uuid;
+  private String profileImageUrl;
+  private String profileImagePath;
+  private HttpStatus status;
 }

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * ExControllerAdvice.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/24
  */
 @RestControllerAdvice
@@ -52,7 +51,7 @@ public class ExControllerAdvice {
   @ExceptionHandler(Exception.class)
   @AddServerCheckedErrorHeader
   public ResponseEntity<ErrorResult> unexpectedError(Exception e) {
-    return new ResponseEntity<>(new ErrorResult("정의되지 않은 에러입니다!", 1),
+    return new ResponseEntity<>(new ErrorResult("내부 서버 오류, 예상하지 못한 에러입니다!", 1),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 

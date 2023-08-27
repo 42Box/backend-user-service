@@ -16,7 +16,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * NicknameHeaderValidationAspect.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/25
  */
 
@@ -35,7 +34,11 @@ public class HeaderValidationAspect {
     }
     String headerName = headerAuthCheck.headerName();
     HttpServletRequest request = attributes.getRequest();
-    Optional<String> nicknameOpt = Optional.ofNullable(request.getHeader(headerName));
-    nicknameOpt.orElseThrow(() -> new DefaultServiceException("users.error.auth-failed", envUtil));
+    Optional<String> headerOpt = Optional.ofNullable(request.getHeader(headerName));
+    headerOpt.orElseThrow(() -> new DefaultServiceException("users.error.auth-failed", envUtil));
+    String header = headerOpt.get();
+    if (header.isEmpty()) {
+      throw new DefaultServiceException("users.error.auth-failed", envUtil);
+    }
   }
 }

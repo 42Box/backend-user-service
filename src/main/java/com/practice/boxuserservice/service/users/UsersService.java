@@ -4,23 +4,26 @@ import com.practice.boxuserservice.entity.users.UsersEntity;
 import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
 import com.practice.boxuserservice.repository.users.UsersRepository;
+import com.practice.boxuserservice.service.users.aws.S3Service;
+import com.practice.boxuserservice.service.users.aws.dto.S3Dto;
 import com.practice.boxuserservice.service.users.dto.PostUsersDto;
 import com.practice.boxuserservice.service.users.dto.PostUsersResultDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersIconDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersThemeDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersUrlListDto;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
+import com.practice.boxuserservice.service.users.dto.UserProfileDto;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * UsersService.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/24
  */
 @Service
@@ -31,6 +34,9 @@ public class UsersService {
   private final UsersRepository usersRepository;
   private final ModelMapper modelMapper;
 
+  private S3Service s3Service;
+
+  @Transactional
   public PostUsersResultDto saveUser(PostUsersDto dto) {
     if (dto.getNickname() != null) {
       Optional<UsersEntity> duplicateUser = usersRepository.findByNickname(dto.getNickname());
@@ -41,13 +47,19 @@ public class UsersService {
         return resultDto;
       }
     }
+    S3Dto s3Dto = s3Service.uploadDefaultImage();
+    String profileImagePath = s3Dto.getPath();
+    String profileImageUrl = s3Dto.getUrl();
     try {
+      dto.setProfileImagePath(profileImagePath);
+      dto.setProfileImageUrl(profileImageUrl);
       UsersEntity user = createUserFromPostDto(dto);
       usersRepository.save(user);
       PostUsersResultDto resultDto = modelMapper.map(user, PostUsersResultDto.class);
       resultDto.setStatus(HttpStatus.CREATED);
       return resultDto;
     } catch (Exception e) {
+      s3Service.deleteUserProfileFileFromS3(profileImagePath);
       throw new DefaultServiceException("users.error.user-create-failed", envUtil);
     }
   }
@@ -60,6 +72,11 @@ public class UsersService {
   public UserMyPageDto getUserByUuid(String uuid) {
     UsersEntity users = findUsersByUuid(uuid);
     return modelMapper.map(users, UserMyPageDto.class);
+  }
+
+  public UserProfileDto getUserProfileByUuid(String uuid) {
+    UsersEntity users = findUsersByUuid(uuid);
+    return modelMapper.map(users, UserProfileDto.class);
   }
 
   public void updateUserUrlList(UpdateUsersUrlListDto updateDto) {
@@ -99,6 +116,8 @@ public class UsersService {
         .role(dto.getRole())
         .campusId(dto.getCampusId())
         .cursusId(dto.getCursusId())
+        .profileImagePath(dto.getProfileImagePath())
+        .profileImageUrl(dto.getProfileImageUrl())
         .build();
   }
 

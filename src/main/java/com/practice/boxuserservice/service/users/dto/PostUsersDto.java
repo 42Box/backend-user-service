@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * PostUserDto.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/25
  */
 @Data
@@ -21,4 +20,6 @@ public class PostUsersDto {
   private UsersRole role;
   private Integer cursusId;
   private Integer campusId;
+  private String profileImagePath;
+  private String profileImageUrl;
 }
