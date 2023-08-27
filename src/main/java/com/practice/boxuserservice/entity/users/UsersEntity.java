@@ -20,6 +20,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,11 +33,13 @@ import org.springframework.http.HttpStatus;
  * UsersEntity.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/23
  */
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+    @Index(name = "idx_users_uuid", columnList = "user_uuid", unique = true),
+    @Index(name = "idx_users_nickname", columnList = "user_nickname", unique = true)
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UsersEntity extends BaseEntity {
@@ -47,6 +50,7 @@ public class UsersEntity extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", updatable = false)
   private long id;
+
 
   @Column(name = "user_uuid", unique = true, nullable = false, updatable = false)
   private String uuid;
@@ -77,21 +81,47 @@ public class UsersEntity extends BaseEntity {
   @Column(name = "user_url_list", columnDefinition = "TEXT", nullable = false)
   private List<UsersUrl> urlList;
 
-  @Column(name = "user_profile_image", columnDefinition = "VARCHAR(255)", nullable = false)
-  private String profileImage;
+  @Column(name = "user_profile_image_path", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false)
+  private String profileImagePath;
+
+  @Column(name = "user_profile_image_url", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false)
+  private String profileImageUrl;
+
+  @Column(name = "user_status_message", columnDefinition = "VARCHAR(255)", nullable = false)
+  private String statusMessage;
 
   @Builder
-  public UsersEntity(String nickname, UsersRole role, Integer campusId, Integer cursusId) {
+  public UsersEntity(String nickname, UsersRole role, Integer campusId, Integer cursusId,
+      String profileImagePath, String profileImageUrl) {
     this.theme = UsersTheme.DEFAULT;
     this.icon = UsersIcon.DEFAULT;
-    profileImage = UsersDefault.USER_PROFILE_IMAGE.getValue();
+    this.statusMessage = UsersDefault.USER_STATUS_MESSAGE.getValue();
+    initProfileImagePath(profileImagePath);
+    initProfileImageUrl(profileImageUrl);
     initRole(role);
     initUuid();
     initCampusId(campusId);
     initCursusId(cursusId);
     initNickname(nickname);
     initUrlList();
+    //    profileImage = UsersDefault.USER_PROFILE_IMAGE.getValue();
   }
+
+  private void initProfileImagePath(String profileImagePath) {
+    if (profileImagePath == null || profileImagePath.isEmpty()) {
+      throw new DefaultServiceException("유저 프로필 이미지는 비어있을 수 없습니다!", 301, HttpStatus.BAD_REQUEST);
+    }
+    this.profileImagePath = profileImagePath;
+  }
+
+  private void initProfileImageUrl(String profileImageUrl) {
+    if (profileImageUrl == null || profileImageUrl.isEmpty()) {
+      throw new DefaultServiceException("유저 프로필 이미지 URL 은 비어있을 수 없습니다!", 301,
+          HttpStatus.BAD_REQUEST);
+    }
+    this.profileImageUrl = profileImageUrl;
+  }
+
 
   private void initRole(UsersRole role) {
     if (role == null) {

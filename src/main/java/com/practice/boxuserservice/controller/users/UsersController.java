@@ -6,6 +6,7 @@ import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersThemeD
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersUrlListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponsePostUsersDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersMyDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUsersProfileDto;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
@@ -13,13 +14,14 @@ import org.springframework.http.ResponseEntity;
  * UsersController.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/24
  */
 public interface UsersController {
 
   ResponseEntity<ResponsePostUsersDto> saveUser(HttpServletRequest request,
       RequestPostUsersDto dto);
+
+  ResponseEntity<ResponseUsersProfileDto> getProfile(String uuid, HttpServletRequest request);
 
   ResponseEntity<ResponseUsersMyDto> getMyPage(HttpServletRequest request);
 

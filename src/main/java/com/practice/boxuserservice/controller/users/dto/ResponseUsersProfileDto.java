@@ -1,8 +1,6 @@
 package com.practice.boxuserservice.controller.users.dto;
 
-import com.practice.boxuserservice.entity.users.type.UsersUrl;
-import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
-import java.util.List;
+import com.practice.boxuserservice.service.users.dto.UserProfileDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,25 +14,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ResponseUsersMyDto {
+public class ResponseUsersProfileDto {
 
   private String uuid;
   private String nickname;
-  private int theme;
-  private String icon;
-  private List<UsersUrl> urlList;
   private String profileImageUrl;
-
   private String profileImagePath;
   private String statusMessage;
 
 
-  public ResponseUsersMyDto(UserMyPageDto dto) {
+  public ResponseUsersProfileDto(UserProfileDto dto) {
     uuid = dto.getUuid();
     nickname = dto.getNickname();
-    theme = dto.getTheme().getIndex();
-    icon = dto.getIcon().getValue();
-    urlList = dto.getUrlList();
     profileImageUrl = dto.getProfileImageUrl();
     profileImagePath = dto.getProfileImagePath();
     statusMessage = dto.getStatusMessage();

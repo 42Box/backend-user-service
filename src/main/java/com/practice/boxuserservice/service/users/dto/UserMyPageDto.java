@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
  * UserDto.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/25
  */
 @AllArgsConstructor
@@ -25,5 +24,7 @@ public class UserMyPageDto {
   private UsersTheme theme;
   private UsersIcon icon;
   private List<UsersUrl> urlList;
-  private String profileImage;
+  private String profileImageUrl;
+  private String profileImagePath;
+  private String statusMessage;
 }

@@ -6,6 +6,7 @@ import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersThemeD
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersUrlListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponsePostUsersDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersMyDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUsersProfileDto;
 import com.practice.boxuserservice.global.aop.validate_nickname_header.HeaderAuthCheck;
 import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
@@ -16,13 +17,16 @@ import com.practice.boxuserservice.service.users.dto.UpdateUsersIconDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersThemeDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersUrlListDto;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
+import com.practice.boxuserservice.service.users.dto.UserProfileDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
  * UsersController.
  *
  * @author : middlefitting
- * @description :
  * @since : 2023/08/24
  */
 @RestController
@@ -53,6 +56,16 @@ public class Users42ControllerImpl implements UsersController {
     PostUsersResultDto resultDto = usersService.saveUser(dto);
     ResponsePostUsersDto responseDto = modelMapper.map(resultDto, ResponsePostUsersDto.class);
     return ResponseEntity.status(resultDto.getStatus()).body(responseDto);
+  }
+
+  @Override
+  @GetMapping("/profile/{uuid}")
+  public ResponseEntity<ResponseUsersProfileDto> getProfile(@PathVariable @NotEmpty String uuid,
+      HttpServletRequest request) {
+    UserProfileDto dto = usersService.getUserProfileByUuid(uuid);
+
+    ResponseUsersProfileDto responseDto = new ResponseUsersProfileDto(dto);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
   @Override
