@@ -9,12 +9,18 @@ import com.practice.boxuserservice.service.users.aws.dto.S3Dto;
 import com.practice.boxuserservice.service.users.dto.PostUsersDto;
 import com.practice.boxuserservice.service.users.dto.PostUsersResultDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersIconDto;
+import com.practice.boxuserservice.service.users.dto.UpdateUsersProfileImageDto;
+import com.practice.boxuserservice.service.users.dto.UpdateUsersStatusMessage;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersThemeDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersUrlListDto;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
 import com.practice.boxuserservice.service.users.dto.UserProfileDto;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
+import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -125,5 +131,30 @@ public class UsersService {
     UsersEntity users = findUsersByUuid(updateDto.getUuid());
     users.updateTheme(updateDto.getTheme());
     usersRepository.save(users);
+  }
+
+  public void updateUserStatusMessage(UpdateUsersStatusMessage updateDto) {
+    UsersEntity users = findUsersByUuid(updateDto.getUuid());
+    users.updateStatusMessage(updateDto.getStatusMessage());
+    usersRepository.save(users);
+  }
+
+  public void updateUserProfileImage(UpdateUsersProfileImageDto dto) {
+    BufferedImage resizedImage;
+    long fileSize;
+    try {
+      BufferedImage bufferedImage = ImageIO.read(dto.getProfileImageFile().getInputStream());
+      resizedImage = Thumbnails.of(bufferedImage).size(48, 48).asBufferedImage();
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      ImageIO.write(resizedImage, "png", os);
+      byte[] imageBytes = os.toByteArray();
+      fileSize = imageBytes.length;
+    } catch (Exception e) {
+      throw new DefaultServiceException("users.error.profile-update-failed", envUtil);
+    }
+    if ((fileSize / 1024) > 100) {
+      throw new DefaultServiceException("users.error.profile-size-over", envUtil);
+    }
+    s3Service.updateUserProfileImage(dto.getProfileImagePath(), resizedImage, fileSize);
   }
 }
