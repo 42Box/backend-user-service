@@ -87,7 +87,7 @@ public class UsersEntity extends BaseEntity {
   @Column(name = "user_profile_image_url", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false)
   private String profileImageUrl;
 
-  @Column(name = "user_status_message", columnDefinition = "VARCHAR(255)", nullable = false)
+  @Column(name = "user_status_message", columnDefinition = "VARCHAR(100)", nullable = false)
   private String statusMessage;
 
   @Builder
@@ -173,5 +173,9 @@ public class UsersEntity extends BaseEntity {
 
   public void updateTheme(UsersTheme theme) {
     this.theme = theme;
+  }
+
+  public void updateStatusMessage(String statusMessage) {
+    this.statusMessage = statusMessage;
   }
 }

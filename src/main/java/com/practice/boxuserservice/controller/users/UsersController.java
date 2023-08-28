@@ -2,6 +2,7 @@ package com.practice.boxuserservice.controller.users;
 
 import com.practice.boxuserservice.controller.users.dto.RequestPostUsersDto;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersIconDto;
+import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersStatusMessage;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersThemeDto;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersUrlListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponsePostUsersDto;
@@ -9,6 +10,7 @@ import com.practice.boxuserservice.controller.users.dto.ResponseUsersMyDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersProfileDto;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * UsersController.
@@ -31,4 +33,9 @@ public interface UsersController {
 
   ResponseEntity<Void> updateUserUrlList(HttpServletRequest request,
       RequestUpdateUsersUrlListDto dto);
+
+  ResponseEntity<Void> updateUserStatusMessage(HttpServletRequest request,
+      RequestUpdateUsersStatusMessage dto);
+
+  ResponseEntity<Void> updateUserProfileImage(HttpServletRequest request, MultipartFile file);
 }

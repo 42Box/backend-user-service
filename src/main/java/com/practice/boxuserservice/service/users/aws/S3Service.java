@@ -7,9 +7,12 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
 import com.practice.boxuserservice.service.users.aws.dto.S3Dto;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,22 @@ public class S3Service {
       return new S3Dto(s3FilePath, s3client.getUrl(bucketName, s3FilePath).toString());
     } catch (Exception e) {
       throw new DefaultServiceException("global.error.unexpected", envUtil);
+    }
+  }
+
+  public void updateUserProfileImage(String filePath, BufferedImage image, long fileSize) {
+    try {
+      String bucketName = envUtil.getStringEnv("bucket.name");
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      ImageIO.write(image, "png", os);
+      InputStream is = new ByteArrayInputStream(os.toByteArray());
+      ObjectMetadata metadata = new ObjectMetadata();
+      metadata.setContentType("image/png");
+      metadata.setContentLength(fileSize);
+      s3client.putObject(
+          new PutObjectRequest(bucketName, filePath, is, metadata));
+    } catch (Exception e) {
+      throw new DefaultServiceException("users.error.profile-update-failed", envUtil);
     }
   }
 
