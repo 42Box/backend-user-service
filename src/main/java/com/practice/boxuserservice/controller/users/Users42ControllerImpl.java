@@ -6,6 +6,11 @@ import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersStatus
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersThemeDto;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersUrlListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponsePostUsersDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserIconDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserProfileImageDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserStatusMessageDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserThemeDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserUrlListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersMyDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersProfileDto;
 import com.practice.boxuserservice.global.aop.validate_nickname_header.HeaderAuthCheck;
@@ -86,7 +91,7 @@ public class Users42ControllerImpl implements UsersController {
   @Override
   @HeaderAuthCheck
   @PutMapping("/me/theme")
-  public ResponseEntity<Void> updateUserTheme(HttpServletRequest request,
+  public ResponseEntity<ResponseUpdateUserThemeDto> updateUserTheme(HttpServletRequest request,
       @RequestBody @Valid RequestUpdateUsersThemeDto dto) {
     String uuid = request.getHeader("uuid");
     UpdateUsersThemeDto updateDto;
@@ -97,13 +102,14 @@ public class Users42ControllerImpl implements UsersController {
     }
     updateDto.setUuid(uuid);
     usersService.updateUserTheme(updateDto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    ResponseUpdateUserThemeDto responseDto = new ResponseUpdateUserThemeDto(updateDto);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
   @Override
   @HeaderAuthCheck
   @PutMapping("/me/icon")
-  public ResponseEntity<Void> updateUserIcon(HttpServletRequest request,
+  public ResponseEntity<ResponseUpdateUserIconDto> updateUserIcon(HttpServletRequest request,
       @RequestBody @Valid RequestUpdateUsersIconDto dto) {
     String uuid = request.getHeader("uuid");
     UpdateUsersIconDto updateDto;
@@ -114,45 +120,56 @@ public class Users42ControllerImpl implements UsersController {
     }
     updateDto.setUuid(uuid);
     usersService.updateUserIcon(updateDto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    ResponseUpdateUserIconDto responseDto = new ResponseUpdateUserIconDto(updateDto);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
   @Override
   @HeaderAuthCheck
   @PutMapping("/me/url-list")
-  public ResponseEntity<Void> updateUserUrlList(HttpServletRequest request,
+  public ResponseEntity<ResponseUpdateUserUrlListDto> updateUserUrlList(HttpServletRequest request,
       @Valid @RequestBody RequestUpdateUsersUrlListDto dto) {
     String uuid = request.getHeader("uuid");
     UpdateUsersUrlListDto updateDto = modelMapper.map(dto, UpdateUsersUrlListDto.class);
     updateDto.setUuid(uuid);
     usersService.updateUserUrlList(updateDto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    ResponseUpdateUserUrlListDto responseDto = modelMapper.map(updateDto,
+        ResponseUpdateUserUrlListDto.class);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
   @Override
   @HeaderAuthCheck
   @PutMapping("/me/status-message")
-  public ResponseEntity<Void> updateUserStatusMessage(HttpServletRequest request,
+  public ResponseEntity<ResponseUpdateUserStatusMessageDto> updateUserStatusMessage(
+      HttpServletRequest request,
       @Valid @RequestBody RequestUpdateUsersStatusMessage dto) {
     String uuid = request.getHeader("uuid");
     UpdateUsersStatusMessage updateDto = modelMapper.map(dto, UpdateUsersStatusMessage.class);
     updateDto.setUuid(uuid);
     usersService.updateUserStatusMessage(updateDto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    ResponseUpdateUserStatusMessageDto responseDto = modelMapper.map(updateDto,
+        ResponseUpdateUserStatusMessageDto.class);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
   @Override
   @HeaderAuthCheck
   @PutMapping("/me/profile-image")
-  public ResponseEntity<Void> updateUserProfileImage(HttpServletRequest request,
+  public ResponseEntity<ResponseUpdateUserProfileImageDto> updateUserProfileImage(
+      HttpServletRequest request,
       @RequestParam("profile-image") MultipartFile file) {
     String profileImagePath = request.getHeader("profileImagePath");
+    String profileImageUrl = request.getHeader("profileImageUrl");
     if (!"image/png".equals(file.getContentType())) {
       throw new DefaultServiceException("users.error.invalid-image-format", envUtil);
     }
     UpdateUsersProfileImageDto dto = new UpdateUsersProfileImageDto(profileImagePath, file);
     usersService.updateUserProfileImage(dto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    ResponseUpdateUserProfileImageDto responseDto = modelMapper.map(dto,
+        ResponseUpdateUserProfileImageDto.class);
+    responseDto.setProfileImageUrl(profileImageUrl);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
 }
