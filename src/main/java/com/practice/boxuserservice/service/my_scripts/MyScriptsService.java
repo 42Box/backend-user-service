@@ -87,4 +87,10 @@ public class MyScriptsService {
     return myScriptsEntities.stream()
         .map(ResponseGetScriptsDto::new).collect(Collectors.toList());
   }
+
+  public long getIsMyScripts(String userUuid, String path) {
+    MyScriptsEntity myScriptsEntity = myScriptsRepository.findByUserUuidAndPath(userUuid, path)
+        .orElseThrow(() -> new DefaultServiceException("my-scripts.error.not-found", envUtil));
+    return myScriptsEntity.getId();
+  }
 }
