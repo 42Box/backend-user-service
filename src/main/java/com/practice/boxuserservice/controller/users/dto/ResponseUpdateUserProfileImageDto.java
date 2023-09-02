@@ -17,5 +17,6 @@ import lombok.NoArgsConstructor;
 public class ResponseUpdateUserProfileImageDto {
 
   private String profileImagePath;
+  private String bigProfileImagePath;
   private String profileImageUrl;
 }

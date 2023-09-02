@@ -1,5 +1,6 @@
 package com.practice.boxuserservice.service.users;
 
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserProfileImageDto;
 import com.practice.boxuserservice.entity.users.UsersEntity;
 import com.practice.boxuserservice.entity.users.type.QuickSlot;
 import com.practice.boxuserservice.global.env.EnvUtil;
@@ -64,12 +65,19 @@ public class UsersService {
         return resultDto;
       }
     }
-    S3Dto s3Dto = s3Service.uploadDefaultImage();
+
+    S3Dto s3Dto = s3Service.uploadDefaultImage(25, 25);
     String profileImagePath = s3Dto.getPath();
     String profileImageUrl = s3Dto.getUrl();
+
+    S3Dto s3Dto2 = s3Service.uploadDefaultImage(145, 145);
+    String bigProfileImagePath = s3Dto2.getPath();
+
     try {
       dto.setProfileImagePath(profileImagePath);
       dto.setProfileImageUrl(profileImageUrl);
+      dto.setBigProfileImagePath(bigProfileImagePath);
+
       UsersEntity user = createUserFromPostDto(dto);
 
       ////추가 러프하게////
@@ -148,6 +156,7 @@ public class UsersService {
         .cursusId(dto.getCursusId())
         .profileImagePath(dto.getProfileImagePath())
         .profileImageUrl(dto.getProfileImageUrl())
+        .bigProfileImagePath(dto.getBigProfileImagePath())
         .build();
   }
 
@@ -163,9 +172,15 @@ public class UsersService {
     usersRepository.save(users);
   }
 
-  public void updateUserProfileImage(UpdateUsersProfileImageDto dto) {
+  @Transactional(rollbackFor = Exception.class)
+  public ResponseUpdateUserProfileImageDto updateUserProfileImage(UpdateUsersProfileImageDto dto,
+      String uuid) {
     BufferedImage resizedImage;
+    BufferedImage resizedBigImage;
+
     long fileSize;
+    long bigFileSize;
+    UsersEntity users = findUsersByUuid(uuid);
     try {
       BufferedImage bufferedImage = ImageIO.read(dto.getProfileImageFile().getInputStream());
       resizedImage = Thumbnails.of(bufferedImage).size(48, 48).asBufferedImage();
@@ -179,7 +194,27 @@ public class UsersService {
     if ((fileSize / 1024) > 100) {
       throw new DefaultServiceException("users.error.profile-size-over", envUtil);
     }
+    try {
+      BufferedImage bufferedImage = ImageIO.read(dto.getProfileImageFile().getInputStream());
+      resizedBigImage = Thumbnails.of(bufferedImage).size(145, 145).asBufferedImage();
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      ImageIO.write(resizedBigImage, "png", os);
+      byte[] imageBytes = os.toByteArray();
+      bigFileSize = imageBytes.length;
+    } catch (Exception e) {
+      throw new DefaultServiceException("users.error.profile-update-failed", envUtil);
+    }
+    if ((bigFileSize / 1024) > 100) {
+      throw new DefaultServiceException("users.error.profile-size-over", envUtil);
+    }
     s3Service.updateUserProfileImage(dto.getProfileImagePath(), resizedImage, fileSize);
+    s3Service.updateUserProfileImage(users.getBigProfileImagePath(), resizedBigImage, bigFileSize);
+
+    ResponseUpdateUserProfileImageDto resultDto = new ResponseUpdateUserProfileImageDto();
+    resultDto.setProfileImagePath(users.getProfileImagePath());
+    resultDto.setProfileImageUrl(users.getProfileImageUrl());
+    resultDto.setBigProfileImagePath(users.getBigProfileImagePath());
+    return resultDto;
   }
 
   public void updateUserQuickSlotList(UpdateUsersQuickSlotListDto updateDto) {

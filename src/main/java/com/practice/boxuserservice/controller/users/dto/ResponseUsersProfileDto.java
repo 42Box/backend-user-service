@@ -21,6 +21,7 @@ public class ResponseUsersProfileDto {
   private String profileImageUrl;
   private String profileImagePath;
   private String statusMessage;
+  private String bigProfileImagePath;
 
 
   public ResponseUsersProfileDto(UserProfileDto dto) {
@@ -29,5 +30,6 @@ public class ResponseUsersProfileDto {
     profileImageUrl = dto.getProfileImageUrl();
     profileImagePath = dto.getProfileImagePath();
     statusMessage = dto.getStatusMessage();
+    bigProfileImagePath = dto.getBigProfileImagePath();
   }
 }

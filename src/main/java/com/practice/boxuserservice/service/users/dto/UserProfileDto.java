@@ -19,5 +19,6 @@ public class UserProfileDto {
   private String nickname;
   private String profileImageUrl;
   private String profileImagePath;
+  private String bigProfileImagePath;
   private String statusMessage;
 }

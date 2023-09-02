@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class S3Service {
   private final AmazonS3 s3client;
   private final EnvUtil envUtil;
 
-  public S3Dto uploadDefaultImage() {
+  public S3Dto uploadDefaultImage(int width, int height) {
     try {
       String fileName = UUID.randomUUID() + ".png";
       String bucketName = envUtil.getStringEnv("bucket.name");
@@ -42,8 +43,16 @@ public class S3Service {
       InputStream is = getClass().getResourceAsStream("/default_user_profile_image.png");
       assert is != null;
       byte[] contentBytes = IOUtils.toByteArray(is);
-      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(contentBytes);
-      long contentLength = contentBytes.length;
+
+      BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(contentBytes));
+      BufferedImage resizedImage = Thumbnails.of(originalImage).size(width, height)
+          .asBufferedImage();
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      ImageIO.write(resizedImage, "png", os);
+      byte[] imageBytes = os.toByteArray();
+      ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageBytes);
+      long contentLength = imageBytes.length;
+
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType("image/png");
       metadata.setContentLength(contentLength);

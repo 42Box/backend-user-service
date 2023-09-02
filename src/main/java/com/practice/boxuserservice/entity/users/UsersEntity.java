@@ -87,6 +87,10 @@ public class UsersEntity extends BaseEntity {
   @Column(name = "user_profile_image_url", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false)
   private String profileImageUrl;
 
+  @Column(name = "user_big_profile_image_path", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false)
+  private String bigProfileImagePath;
+
+
   @Column(name = "user_status_message", columnDefinition = "VARCHAR(100)", nullable = false)
   private String statusMessage;
 
@@ -96,12 +100,13 @@ public class UsersEntity extends BaseEntity {
 
   @Builder
   public UsersEntity(String nickname, UsersRole role, Integer campusId, Integer cursusId,
-      String profileImagePath, String profileImageUrl) {
+      String profileImagePath, String profileImageUrl, String bigProfileImagePath) {
     this.theme = UsersTheme.DEFAULT;
     this.icon = UsersIcon.DEFAULT;
     this.statusMessage = UsersDefault.USER_STATUS_MESSAGE.getValue();
     initProfileImagePath(profileImagePath);
     initProfileImageUrl(profileImageUrl);
+    initBigProfileImagePath(bigProfileImagePath);
     initRole(role);
     initUuid();
     initCampusId(campusId);
@@ -123,6 +128,13 @@ public class UsersEntity extends BaseEntity {
           HttpStatus.BAD_REQUEST);
     }
     this.profileImageUrl = profileImageUrl;
+  }
+
+  private void initBigProfileImagePath(String bigProfileImagePath) {
+    if (bigProfileImagePath == null || bigProfileImagePath.isEmpty()) {
+      throw new DefaultServiceException("유저 프로필 이미지는 비어있을 수 없습니다!", 301, HttpStatus.BAD_REQUEST);
+    }
+    this.bigProfileImagePath = bigProfileImagePath;
   }
 
 
