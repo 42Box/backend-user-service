@@ -1,7 +1,9 @@
 package com.practice.boxuserservice.entity.users;
 
 import com.practice.boxuserservice.entity.BaseEntity;
+import com.practice.boxuserservice.entity.users.converter.UsersQuickSlotListConverter;
 import com.practice.boxuserservice.entity.users.converter.UsersUrlListConverter;
+import com.practice.boxuserservice.entity.users.type.QuickSlot;
 import com.practice.boxuserservice.entity.users.type.UsersDefault;
 import com.practice.boxuserservice.entity.users.type.UsersIcon;
 import com.practice.boxuserservice.entity.users.type.UsersRole;
@@ -50,8 +52,6 @@ public class UsersEntity extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", updatable = false)
   private long id;
-
-
   @Column(name = "user_uuid", unique = true, nullable = false, updatable = false)
   private String uuid;
 
@@ -90,6 +90,10 @@ public class UsersEntity extends BaseEntity {
   @Column(name = "user_status_message", columnDefinition = "VARCHAR(100)", nullable = false)
   private String statusMessage;
 
+  @Convert(converter = UsersQuickSlotListConverter.class)
+  @Column(name = "user_quick_slot_list", columnDefinition = "TEXT", nullable = true)
+  private List<QuickSlot> quickSlotList;
+
   @Builder
   public UsersEntity(String nickname, UsersRole role, Integer campusId, Integer cursusId,
       String profileImagePath, String profileImageUrl) {
@@ -104,7 +108,6 @@ public class UsersEntity extends BaseEntity {
     initCursusId(cursusId);
     initNickname(nickname);
     initUrlList();
-    //    profileImage = UsersDefault.USER_PROFILE_IMAGE.getValue();
   }
 
   private void initProfileImagePath(String profileImagePath) {
@@ -177,5 +180,9 @@ public class UsersEntity extends BaseEntity {
 
   public void updateStatusMessage(String statusMessage) {
     this.statusMessage = statusMessage;
+  }
+
+  public void updateQuickSlotList(List<QuickSlot> quickSlotList) {
+    this.quickSlotList = quickSlotList;
   }
 }

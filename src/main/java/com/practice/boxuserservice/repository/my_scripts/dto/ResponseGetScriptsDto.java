@@ -21,6 +21,7 @@ public class ResponseGetScriptsDto {
     private String description;
     private String path;
     private String userUuid;
+    private String scriptUuid;
 
     public ResponseGetScriptsDto(MyScriptsEntity entity) {
         this.savedId = entity.getId();
@@ -28,5 +29,6 @@ public class ResponseGetScriptsDto {
         this.description = entity.getDescription();
         this.path = entity.getPath();
         this.userUuid = entity.getUserUuid();
+        this.scriptUuid = entity.getScriptUuid();
     }
 }

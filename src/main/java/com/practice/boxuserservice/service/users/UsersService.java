@@ -1,15 +1,20 @@
 package com.practice.boxuserservice.service.users;
 
 import com.practice.boxuserservice.entity.users.UsersEntity;
+import com.practice.boxuserservice.entity.users.type.QuickSlot;
 import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
+import com.practice.boxuserservice.repository.my_scripts.dto.ResponseGetScriptsDto;
 import com.practice.boxuserservice.repository.users.UsersRepository;
+import com.practice.boxuserservice.service.my_scripts.MyScriptsService;
+import com.practice.boxuserservice.service.my_scripts.dto.PostMyScriptsDto;
 import com.practice.boxuserservice.service.users.aws.S3Service;
 import com.practice.boxuserservice.service.users.aws.dto.S3Dto;
 import com.practice.boxuserservice.service.users.dto.PostUsersDto;
 import com.practice.boxuserservice.service.users.dto.PostUsersResultDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersIconDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersProfileImageDto;
+import com.practice.boxuserservice.service.users.dto.UpdateUsersQuickSlotListDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersStatusMessage;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersThemeDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersUrlListDto;
@@ -17,9 +22,13 @@ import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
 import com.practice.boxuserservice.service.users.dto.UserProfileDto;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -34,15 +43,17 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UsersService {
 
   private final EnvUtil envUtil;
   private final UsersRepository usersRepository;
+  private final MyScriptsService myScriptsService;
   private final ModelMapper modelMapper;
 
   private S3Service s3Service;
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public PostUsersResultDto saveUser(PostUsersDto dto) {
     if (dto.getNickname() != null) {
       Optional<UsersEntity> duplicateUser = usersRepository.findByNickname(dto.getNickname());
@@ -60,11 +71,24 @@ public class UsersService {
       dto.setProfileImagePath(profileImagePath);
       dto.setProfileImageUrl(profileImageUrl);
       UsersEntity user = createUserFromPostDto(dto);
+
+      ////추가 러프하게////
+      PostMyScriptsDto myScriptsDto = new PostMyScriptsDto("CleanCache", "clean cache.",
+          "default_script_file/cleanCache.sh", user.getUuid());
+      ResponseGetScriptsDto script = myScriptsService.createMyScripts(myScriptsDto);
+      List<QuickSlot> quickSlotList = new ArrayList<>();
+      QuickSlot quickSlot = new QuickSlot(script.getScriptUuid(), script.getName(),
+          script.getPath(), "sh");
+      quickSlotList.add(quickSlot);
+      user.updateQuickSlotList(quickSlotList);
+      ////추가 러프하게////
+
       usersRepository.save(user);
       PostUsersResultDto resultDto = modelMapper.map(user, PostUsersResultDto.class);
       resultDto.setStatus(HttpStatus.CREATED);
       return resultDto;
     } catch (Exception e) {
+      Logger.getGlobal().warning(e.getMessage());
       s3Service.deleteUserProfileFileFromS3(profileImagePath);
       throw new DefaultServiceException("users.error.user-create-failed", envUtil);
     }
@@ -156,5 +180,11 @@ public class UsersService {
       throw new DefaultServiceException("users.error.profile-size-over", envUtil);
     }
     s3Service.updateUserProfileImage(dto.getProfileImagePath(), resizedImage, fileSize);
+  }
+
+  public void updateUserQuickSlotList(UpdateUsersQuickSlotListDto updateDto) {
+    UsersEntity users = findUsersByUuid(updateDto.getUuid());
+    users.updateQuickSlotList(updateDto.getQuickSlotList());
+    usersRepository.save(users);
   }
 }

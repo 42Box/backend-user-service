@@ -28,8 +28,6 @@ public class PrivateMyScriptsController {
   public ResponseEntity<ResponseIsMyScriptDto> getIsMyScripts(HttpServletRequest request) {
     String userUuid = request.getHeader("uuid");
     String path = request.getHeader("path");
-    System.out.println("userUuid = " + userUuid);
-    System.out.println("path = " + path);
     long savedId = myScriptsService.getIsMyScripts(userUuid, path);
     ResponseIsMyScriptDto dto = new ResponseIsMyScriptDto(savedId, true);
     return ResponseEntity.status(HttpStatus.OK).body(dto);

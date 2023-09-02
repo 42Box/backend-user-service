@@ -29,6 +29,7 @@ public class MyScriptsService {
   private final ModelMapper modelMapper;
 
   public ResponseGetScriptsDto getMyScripts(GetMyScriptsDto getMyScriptsDto) {
+
     MyScriptsEntity myScriptsEntity = myScriptsRepository.findByIdAndUserUuid(
             getMyScriptsDto.getSavedId(), getMyScriptsDto.getUserUuid())
         .orElseThrow(() -> new DefaultServiceException("my-scripts.error.not-found", envUtil));

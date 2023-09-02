@@ -2,6 +2,7 @@ package com.practice.boxuserservice.entity.scripts;
 
 import com.practice.boxuserservice.entity.BaseEntity;
 import com.practice.boxuserservice.service.my_scripts.dto.PutMyScriptsDto;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,12 +51,16 @@ public class MyScriptsEntity extends BaseEntity {
   @Column(name = "my_script_user_uuid", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false, unique = false)
   private String userUuid;
 
+  @Column(name = "my_script_uuid", columnDefinition = "VARCHAR(255)", nullable = false, updatable = false, unique = true)
+  private String scriptUuid;
+
   @Builder
   public MyScriptsEntity(String name, String description, String path, String userUuid) {
     this.name = name;
     this.description = description;
     this.path = path;
     this.userUuid = userUuid;
+    this.scriptUuid = UUID.randomUUID().toString();
   }
 
   public void update(PutMyScriptsDto dto) {

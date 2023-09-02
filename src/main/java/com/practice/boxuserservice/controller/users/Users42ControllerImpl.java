@@ -1,6 +1,7 @@
 package com.practice.boxuserservice.controller.users;
 
 import com.practice.boxuserservice.controller.users.dto.RequestPostUsersDto;
+import com.practice.boxuserservice.controller.users.dto.RequestUpdateUserQuickSlotListDto;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersIconDto;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersStatusMessage;
 import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersThemeDto;
@@ -8,11 +9,13 @@ import com.practice.boxuserservice.controller.users.dto.RequestUpdateUsersUrlLis
 import com.practice.boxuserservice.controller.users.dto.ResponsePostUsersDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserIconDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserProfileImageDto;
+import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserQuickSlotListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserStatusMessageDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserThemeDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUpdateUserUrlListDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersMyDto;
 import com.practice.boxuserservice.controller.users.dto.ResponseUsersProfileDto;
+import com.practice.boxuserservice.entity.users.type.QuickSlot;
 import com.practice.boxuserservice.global.aop.validate_nickname_header.HeaderAuthCheck;
 import com.practice.boxuserservice.global.env.EnvUtil;
 import com.practice.boxuserservice.global.exception.DefaultServiceException;
@@ -21,14 +24,17 @@ import com.practice.boxuserservice.service.users.dto.PostUsersDto;
 import com.practice.boxuserservice.service.users.dto.PostUsersResultDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersIconDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersProfileImageDto;
+import com.practice.boxuserservice.service.users.dto.UpdateUsersQuickSlotListDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersStatusMessage;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersThemeDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersUrlListDto;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
 import com.practice.boxuserservice.service.users.dto.UserProfileDto;
+import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -172,4 +178,27 @@ public class Users42ControllerImpl implements UsersController {
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
 
+  @HeaderAuthCheck
+  @PutMapping("/me/quick-slot")
+  public ResponseEntity<ResponseUpdateUserQuickSlotListDto> updateQuickSlotList(
+      HttpServletRequest request,
+      @RequestBody RequestUpdateUserQuickSlotListDto dto) {
+    String uuid = request.getHeader("uuid");
+
+    if (dto.getQuickSlotList() == null) {
+      dto.setQuickSlotList(new ArrayList<>());
+    }
+
+    if (dto.getQuickSlotList().size() > 8) {
+      throw new DefaultServiceException("users.error.users-quick-slot-size", envUtil);
+    }
+
+    UpdateUsersQuickSlotListDto updateDto = modelMapper.map(dto, UpdateUsersQuickSlotListDto.class);
+    updateDto.setUuid(uuid);
+
+    usersService.updateUserQuickSlotList(updateDto);
+    ResponseUpdateUserQuickSlotListDto responseDto = modelMapper.map(updateDto,
+        ResponseUpdateUserQuickSlotListDto.class);
+    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+  }
 }
