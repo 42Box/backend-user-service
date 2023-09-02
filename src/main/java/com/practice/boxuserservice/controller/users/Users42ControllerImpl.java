@@ -170,12 +170,10 @@ public class Users42ControllerImpl implements UsersController {
     if (!"image/png".equals(file.getContentType())) {
       throw new DefaultServiceException("users.error.invalid-image-format", envUtil);
     }
-    UpdateUsersProfileImageDto dto = new UpdateUsersProfileImageDto(profileImagePath, file);
-    usersService.updateUserProfileImage(dto);
-    ResponseUpdateUserProfileImageDto responseDto = modelMapper.map(dto,
-        ResponseUpdateUserProfileImageDto.class);
-    responseDto.setProfileImageUrl(profileImageUrl);
-    return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    UpdateUsersProfileImageDto dto = new UpdateUsersProfileImageDto(profileImagePath, file, "");
+    ResponseUpdateUserProfileImageDto resultDto = usersService.updateUserProfileImage(dto,
+        request.getHeader("uuid"));
+    return ResponseEntity.status(HttpStatus.OK).body(resultDto);
   }
 
   @HeaderAuthCheck

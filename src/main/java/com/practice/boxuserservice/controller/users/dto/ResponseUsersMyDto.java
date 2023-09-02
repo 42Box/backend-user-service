@@ -27,6 +27,8 @@ public class ResponseUsersMyDto {
   private String profileImageUrl;
 
   private String profileImagePath;
+  private String bigProfileImagePath;
+
   private String statusMessage;
 
   private List<QuickSlot> quickSlotList;
@@ -42,5 +44,6 @@ public class ResponseUsersMyDto {
     profileImagePath = dto.getProfileImagePath();
     statusMessage = dto.getStatusMessage();
     quickSlotList = dto.getQuickSlotList();
+    bigProfileImagePath = dto.getBigProfileImagePath();
   }
 }

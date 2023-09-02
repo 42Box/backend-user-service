@@ -27,6 +27,7 @@ public class UserMyPageDto {
   private List<UsersUrl> urlList;
   private String profileImageUrl;
   private String profileImagePath;
+  private String bigProfileImagePath;
   private String statusMessage;
   private List<QuickSlot> quickSlotList;
 }

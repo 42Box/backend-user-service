@@ -18,4 +18,5 @@ public class UpdateUsersProfileImageDto {
 
   private String profileImagePath;
   private MultipartFile profileImageFile;
+  private String bigProfileImagePath;
 }

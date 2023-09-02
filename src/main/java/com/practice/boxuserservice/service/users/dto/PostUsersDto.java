@@ -22,4 +22,5 @@ public class PostUsersDto {
   private Integer campusId;
   private String profileImagePath;
   private String profileImageUrl;
+  private String bigProfileImagePath;
 }
