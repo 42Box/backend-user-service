@@ -1,5 +1,6 @@
 package com.practice.boxuserservice.controller.users.dto;
 
+import com.practice.boxuserservice.entity.users.type.QuickSlot;
 import com.practice.boxuserservice.entity.users.type.UsersUrl;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
 import java.util.List;
@@ -28,6 +29,8 @@ public class ResponseUsersMyDto {
   private String profileImagePath;
   private String statusMessage;
 
+  private List<QuickSlot> quickSlotList;
+
 
   public ResponseUsersMyDto(UserMyPageDto dto) {
     uuid = dto.getUuid();
@@ -38,5 +41,6 @@ public class ResponseUsersMyDto {
     profileImageUrl = dto.getProfileImageUrl();
     profileImagePath = dto.getProfileImagePath();
     statusMessage = dto.getStatusMessage();
+    quickSlotList = dto.getQuickSlotList();
   }
 }
