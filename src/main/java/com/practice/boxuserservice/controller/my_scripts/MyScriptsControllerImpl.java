@@ -2,6 +2,7 @@ package com.practice.boxuserservice.controller.my_scripts;
 
 import com.practice.boxuserservice.controller.my_scripts.dto.RequestPostMyScriptsDto;
 import com.practice.boxuserservice.controller.my_scripts.dto.RequestUpdateMyScriptsDto;
+import com.practice.boxuserservice.controller.my_scripts.dto.ResponseDeleteMyScriptDto;
 import com.practice.boxuserservice.global.aop.validate_nickname_header.HeaderAuthCheck;
 import com.practice.boxuserservice.repository.my_scripts.dto.ResponseGetScriptsDto;
 import com.practice.boxuserservice.service.my_scripts.MyScriptsService;
@@ -87,11 +88,13 @@ public class MyScriptsControllerImpl implements MyScriptsController {
   @Override
   @HeaderAuthCheck
   @DeleteMapping("/{savedId}")
-  public ResponseEntity<Void> deleteMyScripts(HttpServletRequest request,
+  public ResponseEntity<ResponseDeleteMyScriptDto> deleteMyScripts(HttpServletRequest request,
       @PathVariable @NotNull Long savedId) {
     String userUuid = request.getHeader("uuid");
     GetMyScriptsDto getMyScriptsDto = new GetMyScriptsDto(savedId, userUuid);
     myScriptsService.deleteMyScripts(getMyScriptsDto);
-    return ResponseEntity.status(HttpStatus.OK).build();
+    ResponseDeleteMyScriptDto dto = modelMapper.map(getMyScriptsDto,
+        ResponseDeleteMyScriptDto.class);
+    return ResponseEntity.status(HttpStatus.OK).body(dto);
   }
 }
