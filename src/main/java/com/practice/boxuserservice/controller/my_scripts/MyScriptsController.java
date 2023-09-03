@@ -2,6 +2,7 @@ package com.practice.boxuserservice.controller.my_scripts;
 
 import com.practice.boxuserservice.controller.my_scripts.dto.RequestPostMyScriptsDto;
 import com.practice.boxuserservice.controller.my_scripts.dto.RequestUpdateMyScriptsDto;
+import com.practice.boxuserservice.controller.my_scripts.dto.ResponseDeleteMyScriptDto;
 import com.practice.boxuserservice.repository.my_scripts.dto.ResponseGetScriptsDto;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -25,5 +26,6 @@ public interface MyScriptsController {
   ResponseEntity<ResponseGetScriptsDto> updateMyScripts(HttpServletRequest request,
       RequestUpdateMyScriptsDto requestUpdateMyScriptsDto, Long savedId);
 
-  ResponseEntity<Void> deleteMyScripts(HttpServletRequest request, Long savedId);
+  ResponseEntity<ResponseDeleteMyScriptDto> deleteMyScripts(HttpServletRequest request,
+      Long savedId);
 }
