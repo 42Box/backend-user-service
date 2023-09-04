@@ -17,6 +17,11 @@ import lombok.AllArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
+import software.amazon.awssdk.services.cloudfront.model.CreateInvalidationRequest;
+import software.amazon.awssdk.services.cloudfront.model.InvalidationBatch;
+import software.amazon.awssdk.services.cloudfront.model.Paths;
 
 /**
  * S3Service.
@@ -78,12 +83,34 @@ public class S3Service {
     } catch (Exception e) {
       throw new DefaultServiceException("users.error.profile-update-failed", envUtil);
     }
+    invalidateCache(envUtil.getStringEnv("cloudfront.distribution.id"), filePath);
+  }
+
+  public void invalidateCache(String distributionId, String filePath) {
+    try (CloudFrontClient cloudFrontClient = CloudFrontClient.builder()
+        .region(Region.AWS_GLOBAL)
+        .build()) {
+
+      InvalidationBatch batch = InvalidationBatch.builder()
+          .paths(Paths.builder()
+              .quantity(1)
+              .items(filePath)
+              .build())
+          .callerReference(String.valueOf(System.currentTimeMillis()))
+          .build();
+
+      CreateInvalidationRequest createInvalidationRequest = CreateInvalidationRequest.builder()
+          .distributionId(distributionId)
+          .invalidationBatch(batch)
+          .build();
+      deleteUserProfileFileFromS3(filePath);
+    }
   }
 
   public void deleteUserProfileFileFromS3(String filePath) {
     try {
       String bucketName = envUtil.getStringEnv("bucket.name");
-      s3client.deleteObject(new DeleteObjectRequest(bucketName, filePath));
+      s3client.deleteObject(new DeleteObjectRequest(bucketName, "/" + filePath));
     } catch (Exception e) {
       throw new DefaultServiceException("global.error.unexpected", envUtil);
     }
