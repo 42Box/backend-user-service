@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import lombok.AllArgsConstructor;
@@ -81,13 +82,24 @@ public class UsersService {
       UsersEntity user = createUserFromPostDto(dto);
 
       ////추가 러프하게////
-      PostMyScriptsDto myScriptsDto = new PostMyScriptsDto("CleanCache", "clean cache.",
-          "default_script_file/cleanCache.sh", user.getUuid());
-      ResponseGetScriptsDto script = myScriptsService.createMyScripts(myScriptsDto);
+//      PostMyScriptsDto myScriptsDto = new PostMyScriptsDto("CleanCache", "clean cache.",
+//          "default_script_file/cleanCache.sh", user.getUuid());
+//      ResponseGetScriptsDto script = myScriptsService.createMyScripts(myScriptsDto);
       List<QuickSlot> quickSlotList = new ArrayList<>();
-      QuickSlot quickSlot = new QuickSlot(script.getScriptUuid(), script.getName(),
-          script.getPath(), "sh");
-      quickSlotList.add(quickSlot);
+      // 디폴트 퀵슬롯 //
+      QuickSlot quickSlot1 = new QuickSlot(UUID.randomUUID().toString(), "CleanCache",
+          "default_script_file/cleanCache.sh", "default-sh");
+      QuickSlot quickSlot2 = new QuickSlot(UUID.randomUUID().toString(), "Preferences",
+          "default-preferences", "default-pref");
+      QuickSlot quickSlot3 = new QuickSlot(UUID.randomUUID().toString(), "Scripts",
+          "default-scripts", "default-sh");
+      QuickSlot quickSlot4 = new QuickSlot(UUID.randomUUID().toString(), "User",
+          "default-user", "default-pref");
+      ////////////////
+      quickSlotList.add(quickSlot1);
+      quickSlotList.add(quickSlot2);
+      quickSlotList.add(quickSlot3);
+      quickSlotList.add(quickSlot4);
       user.updateQuickSlotList(quickSlotList);
       ////추가 러프하게////
 
