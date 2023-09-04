@@ -47,6 +47,7 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.530'
     implementation 'net.coobird:thumbnailator:0.4.13'
+    implementation 'software.amazon.awssdk:cloudfront:2.20.131'
 
 
     testImplementation 'org.projectlombok:lombok:1.18.22'
