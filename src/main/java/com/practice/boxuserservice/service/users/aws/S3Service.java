@@ -83,7 +83,8 @@ public class S3Service {
     } catch (Exception e) {
       throw new DefaultServiceException("users.error.profile-update-failed", envUtil);
     }
-    invalidateCache(envUtil.getStringEnv("cloudfront.distribution.id"), filePath);
+    String cloudPath = "/" + filePath;
+    invalidateCache(envUtil.getStringEnv("cloudfront.distribution.id"), cloudPath);
   }
 
   public void invalidateCache(String distributionId, String filePath) {
@@ -103,7 +104,7 @@ public class S3Service {
           .distributionId(distributionId)
           .invalidationBatch(batch)
           .build();
-      deleteUserProfileFileFromS3(filePath);
+      cloudFrontClient.createInvalidation(createInvalidationRequest);
     }
   }
 
