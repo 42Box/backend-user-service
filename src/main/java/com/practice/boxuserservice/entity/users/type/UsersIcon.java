@@ -10,9 +10,13 @@ package com.practice.boxuserservice.entity.users.type;
 public enum UsersIcon {
   DEFAULT("fox", 0),
   BOX("box", 1),
-  ICON42("42", 2);
-
-
+  ICON42("42", 2),
+  SITTING_FOX("sitting_fox", 3),
+  BOX_OC("box_oc", 4),
+  GUN("gun", 5),
+  GON("gon", 6),
+  GAM("gam", 7),
+  LEE("lee", 8);
   private final String value;
   private final int index;
 
