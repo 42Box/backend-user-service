@@ -30,8 +30,11 @@ import com.practice.boxuserservice.service.users.dto.UpdateUsersThemeDto;
 import com.practice.boxuserservice.service.users.dto.UpdateUsersUrlListDto;
 import com.practice.boxuserservice.service.users.dto.UserMyPageDto;
 import com.practice.boxuserservice.service.users.dto.UserProfileDto;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotEmpty.List;
@@ -93,6 +96,19 @@ public class Users42ControllerImpl implements UsersController {
     ResponseUsersMyDto responseDto = new ResponseUsersMyDto(dto);
     return ResponseEntity.status(HttpStatus.OK).body(responseDto);
   }
+
+  @HeaderAuthCheck
+  @GetMapping("/me/logout")
+  public ResponseEntity<ResponseUsersMyDto> logout(HttpServletResponse response) {
+    String tokenName = envUtil.getStringEnv("jwt.token.AUTH_TOKEN_NAME");
+    Cookie cookie = new Cookie(tokenName, null);
+    cookie.setMaxAge(0);
+    cookie.setDomain(envUtil.getStringEnv("domain.value"));
+    cookie.setPath("/");
+    response.addCookie(cookie);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
 
   @Override
   @HeaderAuthCheck
