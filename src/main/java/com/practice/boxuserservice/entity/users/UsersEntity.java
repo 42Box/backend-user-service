@@ -163,20 +163,19 @@ public class UsersEntity extends BaseEntity {
 
   private void initUrlList() {
     this.urlList = Arrays.asList(
-        new UsersUrl("home", "https://42box.kr/"),
-        new UsersUrl("23Coaltheme", "https://42box.github.io/front-end/"),
-        new UsersUrl("loopback", "http://127.0.0.1:3000/"),
-        new UsersUrl("Box 42", "https://42box.github.io/front-end/#/box"),
+        new UsersUrl("42Box", "https://42box.kr/"),
+        new UsersUrl("23CoalTheme", "https://42box.github.io/front-end/"),
         new UsersUrl("Intra 42", "https://intra.42.fr"),
         new UsersUrl("Jiphyeonjeon", "https://42library.kr"),
+        new UsersUrl("42GG", "https://42gg.kr/"),
         new UsersUrl("42STAT", "https://stat.42seoul.kr/home"),
         new UsersUrl("24Hane", "https://24hoursarenotenough.42seoul.kr"),
         new UsersUrl("80kCoding", "https://80000coding.oopy.io"),
-        new UsersUrl("where42", "https://www.where42.kr"),
-        new UsersUrl("cabi", "https://cabi.42seoul.io/"),
-        new UsersUrl("42gg", "https://42gg.kr/")
+        new UsersUrl("Where42", "https://www.where42.kr"),
+        new UsersUrl("Cabi", "https://cabi.42seoul.io/")
     );
   }
+
 
   public void updateUrlList(List<UsersUrl> urlList) {
     this.urlList = urlList;
