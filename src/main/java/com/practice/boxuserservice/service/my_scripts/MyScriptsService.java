@@ -8,6 +8,7 @@ import com.practice.boxuserservice.repository.my_scripts.dto.ResponseGetScriptsD
 import com.practice.boxuserservice.service.my_scripts.dto.GetMyScriptsDto;
 import com.practice.boxuserservice.service.my_scripts.dto.PostMyScriptsDto;
 import com.practice.boxuserservice.service.my_scripts.dto.PutMyScriptsDto;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -83,7 +84,7 @@ public class MyScriptsService {
         .orElseThrow(
             () -> new DefaultServiceException("my-scripts.error.not-found", envUtil));
     if (myScriptsEntities.isEmpty()) {
-      throw new DefaultServiceException("my-scripts.error.not-found", envUtil);
+      return new ArrayList<>();
     }
     return myScriptsEntities.stream()
         .map(ResponseGetScriptsDto::new).collect(Collectors.toList());
